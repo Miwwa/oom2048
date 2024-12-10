@@ -9,4 +9,14 @@
         <InvariantGlobalization>true</InvariantGlobalization>
     </PropertyGroup>
 
+    <ItemGroup>
+        <Compile Remove="oom2048.Tests\**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Remove="oom2048.Tests\**"/>
+    </ItemGroup>
+    <ItemGroup>
+        <None Remove="oom2048.Tests\**"/>
+    </ItemGroup>
+
 </Project>

@@ -15,6 +15,8 @@ public class Game
     }
 
     private State _state = State.Playing;
+    private readonly Board _board = new();
+    private uint _score = 0;
 
     public Game()
     {
@@ -24,7 +26,7 @@ public class Game
     {
         while (_state != State.Quit)
         {
-            Console.Clear();
+            // Console.Clear();
             PrintState();
 
             var inputAction = ConsoleInput.GetNextInputAction();
@@ -65,20 +67,32 @@ public class Game
 
     private void HandlePlayingState(InputAction inputAction)
     {
-        switch (inputAction)
+        if (inputAction == InputAction.RequestRestart)
         {
-            case InputAction.MoveUp:
-            case InputAction.MoveDown:
-            case InputAction.MoveLeft:
-            case InputAction.MoveRight:
-                throw new NotImplementedException();
-                break;
-            case InputAction.RequestRestart:
-                _state = State.ConfirmRestart;
-                break;
-            case InputAction.RequestQuit:
-                _state = State.ConfirmQuit;
-                break;
+            _state = State.ConfirmRestart;
+            return;
+        }
+
+        if (inputAction == InputAction.RequestQuit)
+        {
+            _state = State.ConfirmQuit;
+            return;
+        }
+
+        MoveResult moveResult = inputAction switch
+        {
+            InputAction.MoveRight => _board.MoveRight(),
+            InputAction.MoveLeft => _board.MoveLeft(),
+            InputAction.MoveUp => _board.MoveUp(),
+            InputAction.MoveDown => _board.MoveDown(),
+            _ => MoveResult.None,
+        };
+
+        _score += moveResult.Score;
+        if (moveResult.HasMoved)
+        {
+            _board.TryAddRandomTile();
+            _board.TryAddRandomTile();
         }
     }
 
@@ -86,8 +100,8 @@ public class Game
     {
         if (inputAction == InputAction.ConfirmRequest)
         {
+            Reset();
             _state = State.Playing;
-            // todo: reset game state
         }
 
         if (inputAction == InputAction.CancelRequest)
@@ -100,8 +114,8 @@ public class Game
     {
         if (inputAction == InputAction.ConfirmRequest)
         {
+            Reset();
             _state = State.Playing;
-            // todo: reset game state
         }
 
         if (inputAction == InputAction.CancelRequest)
@@ -128,5 +142,42 @@ public class Game
     private void PrintState()
     {
         Console.WriteLine($"State: {_state}");
+        if (_state == State.Playing)
+        {
+            Console.WriteLine($"Score: {_score}");
+        }
+
+        if (_state == State.ConfirmRestart)
+        {
+            Console.WriteLine("Are you sure you want to restart (Y/N)?");
+        }
+
+        if (_state == State.ConfirmQuit)
+        {
+            Console.WriteLine("Are you sure you want to quit (Y/N)?");
+        }
+
+        if (_state == State.Won || _state == State.Lost)
+        {
+            if (_state == State.Won)
+            {
+                Console.Write("You won! ");
+            }
+
+            if (_state == State.Lost)
+            {
+                Console.Write("You lost! ");
+            }
+
+            Console.WriteLine("Press Y to restart or N to quit.");
+        }
+
+        Console.WriteLine(_board.ToString());
+    }
+
+    private void Reset()
+    {
+        _board.Reset();
+        _score = 0;
     }
 }

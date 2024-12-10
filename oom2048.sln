@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "oom2048", "oom2048.csproj", "{A9EE3FDB-DF4F-4768-87CE-124350E5FB65}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "oom2048.Tests", ".\oom2048.Tests\oom2048.Tests.csproj", "{F6627E1C-B880-479A-BBC6-D226EECD265C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{A9EE3FDB-DF4F-4768-87CE-124350E5FB65}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A9EE3FDB-DF4F-4768-87CE-124350E5FB65}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A9EE3FDB-DF4F-4768-87CE-124350E5FB65}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6627E1C-B880-479A-BBC6-D226EECD265C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6627E1C-B880-479A-BBC6-D226EECD265C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6627E1C-B880-479A-BBC6-D226EECD265C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6627E1C-B880-479A-BBC6-D226EECD265C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
