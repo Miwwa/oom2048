@@ -17,9 +17,11 @@ public class Game
     private State _state = State.Playing;
     private readonly Board _board = new();
     private uint _score = 0;
+    private uint _bestScore = 0;
 
     public Game()
     {
+        _bestScore = SaveStateStorage.LoadBestScore();
     }
 
     public void Run()
@@ -89,6 +91,12 @@ public class Game
 
         _score += moveResult.Score;
 
+        if (_score > _bestScore)
+        {
+            _bestScore = _score;
+            SaveStateStorage.SaveBestScore(_bestScore);
+        }
+
         if (_board.HasMaxValue())
         {
             _state = State.Won;
@@ -153,7 +161,7 @@ public class Game
 
     private void PrintState()
     {
-        Console.WriteLine($"Score: {_score}");
+        Console.WriteLine($"Score: {_score}\tBest score: {_bestScore}");
 
         if (_state == State.Playing)
         {
