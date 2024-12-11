@@ -35,6 +35,8 @@ public class Game
         }
     }
 
+    #region Input handlers
+
     private void HandleInput(InputAction inputAction)
     {
         if (inputAction == InputAction.None)
@@ -62,8 +64,6 @@ public class Game
                 throw new InvalidOperationException($"Unhandled state: {_state}");
         }
     }
-
-    #region Input handlers
 
     private void HandlePlayingState(InputAction inputAction)
     {

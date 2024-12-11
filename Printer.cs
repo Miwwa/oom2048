@@ -24,9 +24,4 @@ public static class Printer
         sb.Append("|----|----|----|----|\n");
         return sb.ToString();
     }
-
-    public static string ToMatrixString(this uint[] cells, int size = 4)
-    {
-        return ArrayToMatrixString(cells, size);
-    }
 }
