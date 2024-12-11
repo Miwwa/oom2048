@@ -26,12 +26,11 @@ public class Game
     {
         while (_state != State.Quit)
         {
-            // Console.Clear();
+            Console.Clear();
             PrintState();
 
             var inputAction = ConsoleInput.GetNextInputAction();
             HandleInput(inputAction);
-            Console.WriteLine($"Input action: {inputAction}");
         }
     }
 
@@ -89,6 +88,19 @@ public class Game
         };
 
         _score += moveResult.Score;
+
+        if (_board.HasMaxValue())
+        {
+            _state = State.Won;
+            return;
+        }
+
+        if (!_board.CanMakeMove())
+        {
+            _state = State.Lost;
+            return;
+        }
+
         if (moveResult.HasMoved)
         {
             _board.TryAddRandomTile();
@@ -141,10 +153,11 @@ public class Game
 
     private void PrintState()
     {
-        Console.WriteLine($"State: {_state}");
+        Console.WriteLine($"Score: {_score}");
+
         if (_state == State.Playing)
         {
-            Console.WriteLine($"Score: {_score}");
+            Console.WriteLine("Press arrow keys to move, R to restart, Q to quit.");
         }
 
         if (_state == State.ConfirmRestart)

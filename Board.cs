@@ -9,14 +9,20 @@ public class Board
     // board size is defined by the game rules, no need to make it configurable
     private const int Size = 4;
     private const uint BaseValue = 2;
+    private const uint MaxValue = 2048;
 
     // move tiles operation is implemented only for one direction - from left to right
     // move tiles in other direction is equivalent to iteration over the array in the different order
     // this is orders of iterations for each direction
-    private static readonly int[] IndexesToShiftRight = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-    private static readonly int[] IndexesToShiftDown = [0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15];
-    private static readonly int[] IndexesToShiftLeft = IndexesToShiftRight.Reverse().ToArray();
-    private static readonly int[] IndexesToShiftUp = IndexesToShiftDown.Reverse().ToArray();
+    private static readonly int[] RowIndexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    private static readonly int[] ColumnIndexes = [0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15];
+    private static readonly int[] RowIndexesReversed = RowIndexes.Reverse().ToArray();
+    private static readonly int[] ColumnIndexesReversed = ColumnIndexes.Reverse().ToArray();
+
+    // private static readonly int[] RowIndexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+    // private static readonly int[] ColumnIndexes = [0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15];
+    // private static readonly int[] RowIndexesReversed = RowIndexes.Reverse().ToArray();
+    // private static readonly int[] ColumnIndexesReversed = ColumnIndexes.Reverse().ToArray();
 
     // store 2D board as a 1D array
     private readonly uint[] _cells;
@@ -26,6 +32,11 @@ public class Board
     {
         _cells = new uint[Size * Size];
         Reset();
+    }
+
+    public Board(uint[] cells)
+    {
+        _cells = cells;
     }
 
     public void Reset()
@@ -58,24 +69,65 @@ public class Board
         return true;
     }
 
+    public bool HasMaxValue()
+    {
+        return Array.Exists(_cells, x => x == MaxValue);
+    }
+
+    public bool CanMakeMove()
+    {
+        bool hasEmptyCell = Array.Exists(_cells, x => x == 0);
+        if (hasEmptyCell)
+        {
+            return true;
+        }
+
+        for (int i = 0; i < Size; i++)
+        {
+            int[] rowIndexes = new int[Size];
+            int[] columnIndexes = new int[Size];
+            for (int j = 0; j < Size; j++)
+            {
+                int index = i * Size + j;
+                rowIndexes[j] = RowIndexes[index];
+                columnIndexes[j] = ColumnIndexes[index];
+            }
+
+            var row = new IndexedSpan(_cells, rowIndexes);
+            var column = new IndexedSpan(_cells, columnIndexes);
+
+            for (int j = 0; j < Size - 2; j++)
+            {
+                // if two adjacent cells have the same non-zero value we can merge them and continue the game
+                // this function is called only after shifting elements, so we don't worry about empty cells in between non-zero values
+                if ((row[j] != 0 && row[j] == row[j + 1]) || (column[j] != 0 && column[j] == column[j + 1]))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     public MoveResult MoveRight()
     {
-        return ShiftRightAndMergeBoard(IndexesToShiftRight);
+        return ShiftRightAndMergeBoard(RowIndexes);
     }
 
     public MoveResult MoveLeft()
     {
-        return ShiftRightAndMergeBoard(IndexesToShiftLeft);
+        return ShiftRightAndMergeBoard(RowIndexesReversed);
     }
 
     public MoveResult MoveUp()
     {
-        return ShiftRightAndMergeBoard(IndexesToShiftUp);
+        return ShiftRightAndMergeBoard(ColumnIndexesReversed);
     }
 
     public MoveResult MoveDown()
     {
-        return ShiftRightAndMergeBoard(IndexesToShiftDown);
+        return ShiftRightAndMergeBoard(ColumnIndexes);
     }
 
     /// <summary>
