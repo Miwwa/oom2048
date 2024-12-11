@@ -3,7 +3,6 @@
 This is a console-based implementation of the popular 2048 game in C#, using .NET 8.0.
 The objective of the game is to combine tiles with the same number,
 aiming to create the tile `2048`. Players control the game board through arrow keys.
----
 
 ## Build Instructions
 
@@ -28,8 +27,6 @@ To ensure everything works as expected, run the unit tests provided within the p
 ```shell
 dotnet test
 ```
-
----
 
 ## License
 
