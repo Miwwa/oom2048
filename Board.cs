@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 
 namespace oom2048;
@@ -15,15 +14,10 @@ public class Board
     // move tiles operation is implemented only for one direction - from left to right
     // move tiles in other direction is equivalent to iteration over the array in the different order
     // this is orders of iterations for each direction
-    private static readonly int[] RowIndexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-    private static readonly int[] ColumnIndexes = [0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15];
-    private static readonly int[] RowIndexesReversed = RowIndexes.Reverse().ToArray();
-    private static readonly int[] ColumnIndexesReversed = ColumnIndexes.Reverse().ToArray();
-
-    // private static readonly int[] RowIndexes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
-    // private static readonly int[] ColumnIndexes = [0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15];
-    // private static readonly int[] RowIndexesReversed = RowIndexes.Reverse().ToArray();
-    // private static readonly int[] ColumnIndexesReversed = ColumnIndexes.Reverse().ToArray();
+    private static readonly int[][] RowIndexes = [[0, 1, 2, 3], [4, 5, 6, 7], [8, 9, 10, 11], [12, 13, 14, 15]];
+    private static readonly int[][] ColIndexes = [[0, 4, 8, 12], [1, 5, 9, 13], [2, 6, 10, 14], [3, 7, 11, 15]];
+    private static readonly int[][] RowIndexesReversed = [[15, 14, 13, 12], [11, 10, 9, 8], [7, 6, 5, 4], [3, 2, 1, 0]];
+    private static readonly int[][] ColIndexesReversed = [[15, 11, 7, 3], [14, 10, 6, 2], [13, 9, 5, 1], [12, 8, 4, 0]];
 
     // store 2D board as a 1D array
     private readonly uint[] _cells;
@@ -85,17 +79,8 @@ public class Board
 
         for (int i = 0; i < Size; i++)
         {
-            int[] rowIndexes = new int[Size];
-            int[] columnIndexes = new int[Size];
-            for (int j = 0; j < Size; j++)
-            {
-                int index = i * Size + j;
-                rowIndexes[j] = RowIndexes[index];
-                columnIndexes[j] = ColumnIndexes[index];
-            }
-
-            var row = new IndexedSpan(_cells, rowIndexes);
-            var column = new IndexedSpan(_cells, columnIndexes);
+            var row = new IndexedSpan(_cells, RowIndexes[i]);
+            var column = new IndexedSpan(_cells, ColIndexes[i]);
 
             for (int j = 0; j < Size - 2; j++)
             {
@@ -123,12 +108,12 @@ public class Board
 
     public MoveResult MoveUp()
     {
-        return ShiftRightAndMergeBoard(ColumnIndexesReversed);
+        return ShiftRightAndMergeBoard(ColIndexesReversed);
     }
 
     public MoveResult MoveDown()
     {
-        return ShiftRightAndMergeBoard(ColumnIndexes);
+        return ShiftRightAndMergeBoard(ColIndexes);
     }
 
     /// <summary>
@@ -136,21 +121,14 @@ public class Board
     /// </summary>
     /// <param name="directionIndex"></param>
     /// <returns>Move summary data</returns>
-    private MoveResult ShiftRightAndMergeBoard(int[] directionIndex)
+    private MoveResult ShiftRightAndMergeBoard(int[][] directionIndex)
     {
         bool hasMoved = false;
         uint score = 0;
 
         for (int i = 0; i < Size; i++)
         {
-            // for each row create an IndexedSpan with shifted indexes
-            int[] rowIndexes = new int[Size];
-            for (int j = 0; j < Size; j++)
-            {
-                rowIndexes[j] = directionIndex[i * Size + j];
-            }
-
-            var row = new IndexedSpan(_cells, rowIndexes);
+            var row = new IndexedSpan(_cells, directionIndex[i]);
             // shift and merge each row and combine results
             var result = row.ShiftRightAndMergeRow();
             hasMoved |= result.HasMoved;
