@@ -185,7 +185,7 @@ public class Game
             Console.WriteLine("Press Y to restart or N to quit.");
         }
 
-        Console.WriteLine(_board.ToString());
+        _board.PrintToConsole();
     }
 
     private void Reset()

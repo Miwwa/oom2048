@@ -50,6 +50,7 @@ public class BoardTest
         Assert.Equal(expected, canMakeMove);
     }
 
+    [Fact]
     void BoardMove_ShouldMoveRight()
     {
         var board = new Board([
@@ -70,6 +71,7 @@ public class BoardTest
         Assert.Equal(expected, board.Cells);
     }
 
+    [Fact]
     void BoardMove_ShouldMoveLeft()
     {
         var board = new Board([
@@ -90,6 +92,7 @@ public class BoardTest
         Assert.Equal(expected, board.Cells);
     }
 
+    [Fact]
     void BoardMove_ShouldMoveUp()
     {
         var board = new Board([
@@ -110,6 +113,7 @@ public class BoardTest
         Assert.Equal(expected, board.Cells);
     }
 
+    [Fact]
     void BoardMove_ShouldMoveDown()
     {
         var board = new Board([
@@ -128,5 +132,23 @@ public class BoardTest
 
         board.MoveDown();
         Assert.Equal(expected, board.Cells);
+    }
+
+    [Fact]
+    public void BoardState_ShouldConvertToFormattedString()
+    {
+        var board = new Board([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]);
+        string expected = "|----|----|----|----|\n" +
+                          "|   1|   2|   3|   4|\n" +
+                          "|----|----|----|----|\n" +
+                          "|   5|   6|   7|   8|\n" +
+                          "|----|----|----|----|\n" +
+                          "|   9|  10|  11|  12|\n" +
+                          "|----|----|----|----|\n" +
+                          "|  13|  14|  15|  16|\n" +
+                          "|----|----|----|----|\n";
+
+        string result = board.ToString();
+        Assert.Equal(expected, result);
     }
 }

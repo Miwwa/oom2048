@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace oom2048;
 
@@ -161,7 +162,62 @@ public class Board
 
     public override string ToString()
     {
-        return Printer.ArrayToMatrixString(_cells, Size);
+        StringBuilder sb = new StringBuilder();
+
+        for (int i = 0; i < Size; i++)
+        {
+            sb.Append("|----|----|----|----|\n");
+            for (int j = 0; j < Size; j++)
+            {
+                uint value = _cells[i * Size + j];
+                sb.Append("|");
+                sb.Append(value.ToString().PadLeft(4));
+            }
+
+            sb.Append("|\n");
+        }
+
+        sb.Append("|----|----|----|----|\n");
+        return sb.ToString();
+    }
+
+    public void PrintToConsole()
+    {
+        for (int i = 0; i < Size; i++)
+        {
+            Console.Write("|----|----|----|----|\n");
+            for (int j = 0; j < Size; j++)
+            {
+                uint value = _cells[i * Size + j];
+                Console.Write("|");
+                Console.ForegroundColor = GetColorForValue(value);
+                Console.Write(value.ToString().PadLeft(4));
+                Console.ResetColor();
+            }
+
+            Console.Write("|\n");
+        }
+
+        Console.Write("|----|----|----|----|\n");
+    }
+
+    private static ConsoleColor GetColorForValue(uint value)
+    {
+        return value switch
+        {
+            2 => ConsoleColor.Cyan,
+            4 => ConsoleColor.Green,
+            8 => ConsoleColor.Yellow,
+            16 => ConsoleColor.Magenta,
+            32 => ConsoleColor.Blue,
+            64 => ConsoleColor.DarkRed,
+            128 => ConsoleColor.DarkYellow,
+            256 => ConsoleColor.DarkGreen,
+            512 => ConsoleColor.DarkCyan,
+            1024 => ConsoleColor.DarkMagenta,
+            2048 => ConsoleColor.Red,
+            _ => ConsoleColor.Gray,
+        };
     }
 }
 
