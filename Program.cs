@@ -1,7 +1,9 @@
 ﻿using System;
 using oom2048;
 
-var game = new Game();
+var game = new Game(SaveStateStorage.LoadBestScore());
+game.OnBestScoreChanged += SaveStateStorage.SaveBestScore;
+
 try
 {
     game.Run();

@@ -37,9 +37,6 @@ public class Board
     public void Reset()
     {
         Array.Fill<uint>(_cells, 0);
-        // add two random tiles at start of the game
-        TryAddRandomTile();
-        TryAddRandomTile();
     }
 
     public bool TryAddRandomTile()
@@ -71,12 +68,6 @@ public class Board
 
     public bool CanMakeMove()
     {
-        bool hasEmptyCell = Array.Exists(_cells, x => x == 0);
-        if (hasEmptyCell)
-        {
-            return true;
-        }
-
         for (int i = 0; i < Size; i++)
         {
             var row = new IndexedSpan(_cells, RowIndexes[i]);
@@ -84,6 +75,10 @@ public class Board
 
             for (int j = 0; j < Size - 2; j++)
             {
+                if (row[j] == 0 || column[j] == 0)
+                {
+                    return true;
+                }
                 // if two adjacent cells have the same non-zero value we can merge them and continue the game
                 // this function is called only after shifting elements, so we don't worry about empty cells in between non-zero values
                 if ((row[j] != 0 && row[j] == row[j + 1]) || (column[j] != 0 && column[j] == column[j + 1]))

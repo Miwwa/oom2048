@@ -19,9 +19,10 @@ public class Game
     private uint _score = 0;
     private uint _bestScore = 0;
 
-    public Game()
+    public event Action<uint> OnBestScoreChanged = delegate { };
+
+    public Game(uint bestScore = 0)
     {
-        _bestScore = SaveStateStorage.LoadBestScore();
     }
 
     public void Run()
@@ -94,7 +95,7 @@ public class Game
         if (_score > _bestScore)
         {
             _bestScore = _score;
-            SaveStateStorage.SaveBestScore(_bestScore);
+            OnBestScoreChanged(_bestScore);
         }
 
         if (_board.HasMaxValue())
@@ -103,16 +104,15 @@ public class Game
             return;
         }
 
-        if (!_board.CanMakeMove())
-        {
-            _state = State.Lost;
-            return;
-        }
-
         if (moveResult.HasMoved)
         {
             _board.TryAddRandomTile();
             _board.TryAddRandomTile();
+        }
+
+        if (!_board.CanMakeMove())
+        {
+            _state = State.Lost;
         }
     }
 
@@ -199,6 +199,9 @@ public class Game
     private void Reset()
     {
         _board.Reset();
+        // add two random tiles at start of the game
+        _board.TryAddRandomTile();
+        _board.TryAddRandomTile();
         _score = 0;
     }
 }
