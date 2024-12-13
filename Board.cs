@@ -125,9 +125,56 @@ public class Board
         {
             var row = new IndexedSpan(_cells, directionIndex[i]);
             // shift and merge each row and combine results
-            var result = row.ShiftRightAndMergeRow();
+            var result = ShiftRightAndMergeRow(row);
             hasMoved |= result.HasMoved;
             score += result.Score;
+        }
+
+        return new MoveResult(hasMoved, score);
+    }
+
+    public static MoveResult ShiftRightAndMergeRow(IndexedSpan row)
+    {
+        bool hasMoved = false;
+        uint score = 0;
+
+        // merge cells with same value from right to left
+        int lastNotZero = row.Length - 1;
+        for (int i = row.Length - 2; i >= 0; i--)
+        {
+            if (row[i] == 0)
+            {
+                continue;
+            }
+
+            if (row[i] == row[lastNotZero])
+            {
+                row[lastNotZero] *= 2;
+                row[i] = 0;
+                score += row[lastNotZero];
+                hasMoved = true;
+            }
+
+            lastNotZero = i;
+        }
+
+        // move non-zero cells to the right
+        int lastZero = row.Length - 1;
+        for (int i = row.Length - 1; i >= 0; i--)
+        {
+            if (row[i] == 0)
+            {
+                continue;
+            }
+
+            if (i != lastZero)
+            {
+                row[lastZero] = row[i];
+                row[i] = 0;
+                hasMoved = true;
+            }
+
+            lastZero--;
         }
 
         return new MoveResult(hasMoved, score);

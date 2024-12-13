@@ -151,4 +151,94 @@ public class BoardTest
         string result = board.ToString();
         Assert.Equal(expected, result);
     }
+
+    [Theory]
+    [InlineData(new uint[] {2, 0, 0, 0}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 2})]
+    [InlineData(new uint[] {0, 0, 0, 2}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 2})]
+    [InlineData(new uint[] {0, 0, 0, 0}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 0})]
+    [InlineData(new uint[] {2, 4, 8, 16}, new[] {0, 1, 2, 3}, new uint[] {2, 4, 8, 16})]
+    [InlineData(new uint[] {0, 2, 4, 0}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 2, 4})]
+    public void ShiftAndMergeOneRow_ShouldShiftRight(uint[] board, int[] indexes, uint[] expected)
+    {
+        IndexedSpan row = new IndexedSpan(board, indexes);
+        Board.ShiftRightAndMergeRow(row);
+        Assert.Equal(expected, board);
+    }
+
+    [Theory]
+    [InlineData(new uint[] {0, 0, 0, 2}, new[] {3, 2, 1, 0}, new uint[] {2, 0, 0, 0})]
+    [InlineData(new uint[] {2, 0, 0, 4}, new[] {3, 2, 1, 0}, new uint[] {2, 4, 0, 0})]
+    public void ShiftAndMergeOneRow_ShouldShiftLeft(uint[] board, int[] indexes, uint[] expected)
+    {
+        IndexedSpan row = new IndexedSpan(board, indexes);
+        Board.ShiftRightAndMergeRow(row);
+        Assert.Equal(expected, board);
+    }
+
+    [Theory]
+    [InlineData(new uint[] {0, 0, 2, 2}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 4})]
+    [InlineData(new uint[] {0, 2, 0, 2}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 4})]
+    [InlineData(new uint[] {2, 0, 0, 2}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 4})]
+    [InlineData(new uint[] {0, 2, 2, 0}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 4})]
+    [InlineData(new uint[] {2, 0, 2, 0}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 4})]
+    [InlineData(new uint[] {2, 2, 0, 0}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 0, 4})]
+    [InlineData(new uint[] {2, 2, 2, 0}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 2, 4})]
+    [InlineData(new uint[] {0, 2, 2, 2}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 2, 4})]
+    [InlineData(new uint[] {2, 2, 2, 2}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 4, 4})]
+    [InlineData(new uint[] {2, 2, 2, 4}, new[] {0, 1, 2, 3}, new uint[] {0, 2, 4, 4})]
+    [InlineData(new uint[] {0, 2, 2, 4}, new[] {0, 1, 2, 3}, new uint[] {0, 0, 4, 4})]
+    public void ShiftAndMergeOneRow_ShouldShiftAndMergeRight(uint[] board, int[] indexes, uint[] expected)
+    {
+        IndexedSpan row = new IndexedSpan(board, indexes);
+        Board.ShiftRightAndMergeRow(row);
+        Assert.Equal(expected, board);
+    }
+
+    [Fact]
+    public void ShiftAndMergeOneRow_ShouldShiftOnlyOneRow()
+    {
+        uint[] board =
+        [
+            0, 0, 2, 0,
+            2, 0, 0, 0,
+            0, 2, 0, 0,
+            0, 0, 2, 0,
+        ];
+        uint[] expected =
+        [
+            0, 0, 0, 2,
+            2, 0, 0, 0,
+            0, 2, 0, 0,
+            0, 0, 2, 0,
+        ];
+
+        int[] indexes = [0, 1, 2, 3];
+        IndexedSpan row = new IndexedSpan(board, indexes);
+        Board.ShiftRightAndMergeRow(row);
+        Assert.Equal(expected, board);
+    }
+
+    [Fact]
+    public void ShiftAndMergeOneRow_ShouldShiftOnlyOneColumn()
+    {
+        uint[] board =
+        [
+            0, 0, 2, 0,
+            2, 0, 0, 0,
+            0, 2, 0, 0,
+            0, 0, 2, 0,
+        ];
+        uint[] expected =
+        [
+            0, 0, 2, 0,
+            0, 0, 0, 0,
+            0, 2, 0, 0,
+            2, 0, 2, 0,
+        ];
+
+        int[] indexes = [0, 4, 8, 12];
+        IndexedSpan row = new IndexedSpan(board, indexes);
+        Board.ShiftRightAndMergeRow(row);
+        Assert.Equal(expected, board);
+    }
 }
