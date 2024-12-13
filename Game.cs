@@ -23,6 +23,7 @@ public class Game
 
     public Game(uint bestScore = 0)
     {
+        Reset();
     }
 
     public void Run()
@@ -106,7 +107,6 @@ public class Game
 
         if (moveResult.HasMoved)
         {
-            _board.TryAddRandomTile();
             _board.TryAddRandomTile();
         }
 

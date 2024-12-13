@@ -10,6 +10,7 @@ public class Board
     private const int Size = 4;
     private const uint BaseValue = 2;
     private const uint MaxValue = 2048;
+    private const float UpperValueChance = 0.1f;
 
     // move tiles operation is implemented only for one direction - from left to right
     // move tiles in other direction is equivalent to iteration over the array in the different order
@@ -55,9 +56,18 @@ public class Board
             return false;
         }
 
+        // 10% chance to get a value of 4
+        // 90% chance to get a value of 2
+        uint value = BaseValue;
+        float randomValue = Random.Shared.NextSingle();
+        if (randomValue < UpperValueChance)
+        {
+            value = BaseValue + BaseValue;
+        }
+
         int randomIndex = Random.Shared.Next(0, emptyCells.Count);
         int randomCell = emptyCells[randomIndex];
-        _cells[randomCell] = BaseValue;
+        _cells[randomCell] = value;
         return true;
     }
 
